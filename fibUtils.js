@@ -1,5 +1,5 @@
 let fibonacci = function(n) {
-  let sequence = [1, 1];
+  let sequence = [0, 1];
   if (n < 1) {
     return [];
   }
