@@ -1,7 +1,7 @@
 apiVersion: serving.knative.dev/v1alpha1
 kind: Service
 metadata:
-  name: fibonacci-app
+  name: fib-knative
   namespace: default
 spec:
   runLatest:
