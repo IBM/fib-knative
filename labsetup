@@ -9,8 +9,9 @@ set -e
 # Make sure we clean-up afterwards
 trap clean EXIT
 function clean {
+    cat labsetup.log
     rm -f labsetup-tmp*
-	echo
+    echo
 }
 
 if [[ -z "$1" ]]; then
@@ -59,8 +60,8 @@ fi
 
 # download the lab running tool, just in case people need it
 TOOLSURL=https://raw.githubusercontent.com/IBM/knative101/master/workshop/tools
-test -x .demoscript || wget ${TOOLSURL}/.demoscript && chmod +x .demoscript
-test -x demo || wget ${TOOLSURL}/demo && chmod +x demo
+test -x .demoscript || wget -q ${TOOLSURL}/.demoscript && chmod +x .demoscript
+test -x demo || wget -q ${TOOLSURL}/demo && chmod +x demo
 
 echo Creating registry namespace: ${NS_NAME} | tee -a labsetup.log
 ic cr namespace-add ${NS_NAME} >> labsetup.log 2>&1
@@ -133,3 +134,5 @@ echo
 echo Export environment variables to start using Kubernetes:
 echo 
 echo ${config}
+
+rm -f labsetup.log
