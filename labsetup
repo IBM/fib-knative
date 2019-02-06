@@ -9,7 +9,9 @@ set -e
 # Make sure we clean-up afterwards
 trap clean EXIT
 function clean {
-    cat labsetup.log
+    if test -f labsetup.log ; then
+        cat labsetup.log
+    fi
     rm -f labsetup-tmp*
     echo
 }
@@ -57,6 +59,9 @@ base64=(base64 -w0)
 if [[ `uname` == *"Darwin"* ]]; then
     base64=(base64 -b0)
 fi
+
+# make sure all plugins are up to date
+ic plugin update
 
 # download the lab running tool, just in case people need it
 TOOLSURL=https://raw.githubusercontent.com/IBM/knative101/master/workshop/tools
