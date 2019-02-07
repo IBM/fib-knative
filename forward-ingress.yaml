@@ -15,5 +15,5 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: knative-ingressgateway
+              serviceName: istio-ingressgateway
               servicePort: 80

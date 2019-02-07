@@ -10,9 +10,10 @@ set -e
 trap clean EXIT
 function clean {
     if test -f labsetup.log ; then
+        echo "*** Something went wrong:"
         cat labsetup.log
     fi
-    rm -f labsetup-tmp* labsetup.log
+    rm -f labsetup-tmp*
     echo
 }
 
@@ -67,6 +68,7 @@ ibmcloud plugin update --all
 TOOLSURL=https://raw.githubusercontent.com/IBM/knative101/master/workshop/tools
 test -x .demoscript || wget -q ${TOOLSURL}/.demoscript && chmod +x .demoscript
 test -x demo || wget -q ${TOOLSURL}/demo && chmod +x demo
+test -x pods || wget -q ${TOOLSURL}/pods && chmod +x pods
 
 echo Creating registry namespace: ${NS_NAME} | tee -a labsetup.log
 ibmcloud cr namespace-add ${NS_NAME} >> labsetup.log 2>&1
@@ -139,3 +141,5 @@ echo
 echo Export environment variables to start using Kubernetes:
 echo 
 echo ${config}
+
+rm -f labsetup.log  # So we don't print it by mistake
