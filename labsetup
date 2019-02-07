@@ -12,7 +12,7 @@ function clean {
     if test -f labsetup.log ; then
         cat labsetup.log
     fi
-    rm -f labsetup-tmp*
+    rm -f labsetup-tmp* labsetup.log
     echo
 }
 
@@ -29,22 +29,22 @@ fi
 NS_NAME=${1}
 K8S_NAME=${2}
 TMPNAME=labsetup-tmp${RANDOM}
-ACCOUNT_SEARCH=${ACCOUNT_SEARCH:-" IBM  *ACTIVE"}
+ACCOUNT_SEARCH=${ACCOUNT_SEARCH:-"ibmlab01@us.ibm.com"}
 
 rm -f labsetup.log
 
 # Look for required executables
-if ! which ic > /dev/null ; then
-    echo "'ic' command is not installed"
+if ! which ibmcloud > /dev/null ; then
+    echo "'ibmcloud' command is not installed"
     exit 1
 fi
 
-if ! ic cr > /dev/null 2>&1 ; then
+if ! ibmcloud cr > /dev/null 2>&1 ; then
     echo "'cr' plugin is not installed"
     exit 1
 fi
 
-if ! ic ks > /dev/null 2>&1 ; then
+if ! ibmcloud ks > /dev/null 2>&1 ; then
     echo "'ks' plugin is not installed"
     exit 1
 fi
@@ -61,7 +61,7 @@ if [[ `uname` == *"Darwin"* ]]; then
 fi
 
 # make sure all plugins are up to date
-ic plugin update
+ibmcloud plugin update --all
 
 # download the lab running tool, just in case people need it
 TOOLSURL=https://raw.githubusercontent.com/IBM/knative101/master/workshop/tools
@@ -69,22 +69,22 @@ test -x .demoscript || wget -q ${TOOLSURL}/.demoscript && chmod +x .demoscript
 test -x demo || wget -q ${TOOLSURL}/demo && chmod +x demo
 
 echo Creating registry namespace: ${NS_NAME} | tee -a labsetup.log
-ic cr namespace-add ${NS_NAME} >> labsetup.log 2>&1
+ibmcloud cr namespace-add ${NS_NAME} >> labsetup.log 2>&1
 
 echo Creating a registry access token | tee -a labsetup.log
-ic cr token-add --description "for fibdemo" --readwrite > ${TMPNAME}-out
+ibmcloud cr token-add --description "for fibdemo" --readwrite > ${TMPNAME}-out
 token=$(grep Token ${TMPNAME}-out | grep -v -i identi | sed "s/^[^ ]*\s*\([^ ]*\) *$/\1/g")
 token64=$(echo -n "${token}" | ${base64[*]})
 rm -f ${TMPNAME}-out
 
 
 echo Switching to the IBM account to access the lab Kubernetes cluster | tee -a labsetup.log
-account=$(ic account list | grep "${ACCOUNT_SEARCH}" | sed "s/ .*//")
+account=$(ibmcloud account list | grep "${ACCOUNT_SEARCH}" | sed "s/ .*//")
 if [[ -z "${account}" ]]; then
     echo "Can't find the '${ACCOUNT_SEARCH}' account"
     exit 1
 fi
-ic target -c "${account}" >> labsetup.log 2>&1
+ibmcloud target -c "${account}" >> labsetup.log 2>&1
 
 
 echo Retrieving the configuration for Kubernetes cluster: ${K8S_NAME} | tee -a labsetup.log
@@ -139,5 +139,3 @@ echo
 echo Export environment variables to start using Kubernetes:
 echo 
 echo ${config}
-
-rm -f labsetup.log
