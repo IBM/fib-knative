@@ -10,9 +10,10 @@ set -e
 trap clean EXIT
 function clean {
     if test -f labsetup.log ; then
+        echo "*** Something went wrong:"
         cat labsetup.log
     fi
-    rm -f labsetup-tmp* labsetup.log
+    rm -f labsetup-tmp*
     echo
 }
 
@@ -139,3 +140,5 @@ echo
 echo Export environment variables to start using Kubernetes:
 echo 
 echo ${config}
+
+rm -f labsetup.log  # So we don't print it by mistake
