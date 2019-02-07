@@ -70,6 +70,14 @@ test -x .demoscript || wget -q ${TOOLSURL}/.demoscript && chmod +x .demoscript
 test -x demo || wget -q ${TOOLSURL}/demo && chmod +x demo
 test -x pods || wget -q ${TOOLSURL}/pods && chmod +x pods
 
+currentaccount=$(ibmcloud target | grep "Account:" | sed "s/.*(//" | sed "s/).*//")
+if test -f $HOME/.oldaccount ; then
+    if [[ "${currentaccount}" != "$(cat $HOME/.oldaccount)" ]]; then
+        echo "Switching back to the original account"
+        ibmcloud target -c "$(cat $HOME/.oldaccount)" >> labsetup.log 2>&1
+    fi
+fi
+
 echo Creating registry namespace: ${NS_NAME} | tee -a labsetup.log
 ibmcloud cr namespace-add ${NS_NAME} >> labsetup.log 2>&1
 
@@ -82,7 +90,7 @@ rm -f ${TMPNAME}-out
 
 echo Switching to the IBM account to access the lab Kubernetes cluster | tee -a labsetup.log
 
-oldaccount=$(ibmcloud target | grep "Account:" | sed "s/.*(//" | sed "s/).*//")
+echo -n "${currentaccount}" > $HOME/.oldaccount
 account=$(ibmcloud account list | grep "${ACCOUNT_SEARCH}" | sed "s/ .*//")
 if [[ -z "${account}" ]]; then
     echo "Can't find the '${ACCOUNT_SEARCH}' account"
@@ -101,8 +109,8 @@ rm -f "${TMPNAME}-config"
 echo "Installing Knative (and Istio)" | tee -a labsetup.log
 bx ks cluster-addon-enable knative -y --cluster "${K8S_NAME}"
 
-echo Switching back the original account | tee -a labsetup.log
-ibmcloud target -c "${oldaccount}" >> labsetup.log 2>&1
+# echo Switching back the original account | tee -a labsetup.log
+# ibmcloud target -c "${currentaccount}" >> labsetup.log 2>&1
 
 
 echo Creating the docker registry secret | tee -a labsetup.log
