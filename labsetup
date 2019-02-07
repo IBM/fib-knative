@@ -29,7 +29,7 @@ fi
 NS_NAME=${1}
 K8S_NAME=${2}
 TMPNAME=labsetup-tmp${RANDOM}
-ACCOUNT_SEARCH=${ACCOUNT_SEARCH:-" IBM  *ACTIVE"}
+ACCOUNT_SEARCH=${ACCOUNT_SEARCH:-"ibmlab01@us.ibm.com"}
 
 rm -f labsetup.log
 
@@ -61,7 +61,7 @@ if [[ `uname` == *"Darwin"* ]]; then
 fi
 
 # make sure all plugins are up to date
-ibmcloud plugin update
+ibmcloud plugin update --all
 
 # download the lab running tool, just in case people need it
 TOOLSURL=https://raw.githubusercontent.com/IBM/knative101/master/workshop/tools
