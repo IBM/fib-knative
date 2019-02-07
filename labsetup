@@ -81,13 +81,14 @@ rm -f ${TMPNAME}-out
 
 
 echo Switching to the IBM account to access the lab Kubernetes cluster | tee -a labsetup.log
+
+oldaccount=$(ibmcloud target | grep "Account:" | sed "s/.*(//" | sed "s/).*//")
 account=$(ibmcloud account list | grep "${ACCOUNT_SEARCH}" | sed "s/ .*//")
 if [[ -z "${account}" ]]; then
     echo "Can't find the '${ACCOUNT_SEARCH}' account"
     exit 1
 fi
 ibmcloud target -c "${account}" >> labsetup.log 2>&1
-
 
 echo Retrieving the configuration for Kubernetes cluster: ${K8S_NAME} | tee -a labsetup.log
 bx config --check-version false
@@ -96,6 +97,9 @@ bx ks cluster-config -s --export "${K8S_NAME}" > ${TMPNAME}-config || \
 config=$(cat "${TMPNAME}-config")
 $(echo ${config})
 rm -f "${TMPNAME}-config"
+
+echo Switching back the original account | tee -a labsetup.log
+ibmcloud target -c "${oldaccount}" >> labsetup.log 2>&1
 
 
 echo Creating the docker registry secret | tee -a labsetup.log
