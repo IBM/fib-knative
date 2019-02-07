@@ -75,6 +75,7 @@ if test -f $HOME/.oldaccount ; then
     if [[ "${currentaccount}" != "$(cat $HOME/.oldaccount)" ]]; then
         echo "Switching back to the original account"
         ibmcloud target -c "$(cat $HOME/.oldaccount)" >> labsetup.log 2>&1
+		currentaccount=$(cat $HOME/.oldaccount)
     fi
 fi
 
