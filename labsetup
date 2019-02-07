@@ -107,8 +107,8 @@ config=$(cat "${TMPNAME}-config")
 $(echo ${config})
 rm -f "${TMPNAME}-config"
 
-echo "Installing Knative (and Istio)" | tee -a labsetup.log
-bx ks cluster-addon-enable knative -y --cluster "${K8S_NAME}"
+# echo "Installing Knative (and Istio)" | tee -a labsetup.log
+# bx ks cluster-addon-enable knative -y --cluster "${K8S_NAME}"
 
 # echo Switching back the original account | tee -a labsetup.log
 # ibmcloud target -c "${currentaccount}" >> labsetup.log 2>&1
