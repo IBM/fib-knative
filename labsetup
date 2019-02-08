@@ -115,7 +115,7 @@ rm -f "${TMPNAME}"
 # ibmcloud target -c "${currentaccount}" >> $LOG 2>&1
 
 echo Creating the docker registry secret | tee -a $LOG
-kubectl delete secret/ibm-cr-secret >> $LOG 2>&1
+kubectl delete secret/ibm-cr-secret >> $LOG 2>&1 || true
 kubectl create secret docker-registry ibm-cr-secret \
     --docker-server=https://registry.ng.bluemix.net \
     --docker-username=token --docker-password="${token}" >> $LOG 2>&1
@@ -128,7 +128,7 @@ rm -f ${TMPNAME}
 
 # Create the ServiceAccount
 echo Creating the ServiceAccount | tee -a $LOG
-kubectl delete serviceaccount/build-bot >> $LOG 2>&1
+kubectl delete serviceaccount/build-bot >> $LOG 2>&1 || true
 kubectl create -f service-account.yaml >> $LOG 2>&1
 
 echo
