@@ -122,13 +122,13 @@ kubectl create secret docker-registry ibm-cr-secret \
 
 # Create the basic auth Secret
 echo Creating the basic user auth secret | tee -a $LOG
-sed "s/\(^.*password: *\).*/\1${token64}/" < docker-secret > ${TMPNAME}
+sed "s/\(^.*password: *\).*/\1${token64}/" < docker-secret.yaml > ${TMPNAME}
 kubectl apply -f ${TMPNAME} >> $LOG 2>&1
 rm -f ${TMPNAME}
 
 # Create the ServiceAccount
 echo Creating the ServiceAccount | tee -a $LOG
-kubectl delete -f serviceaccount/build-bot >> $LOG 2>&1
+kubectl delete serviceaccount/build-bot >> $LOG 2>&1
 kubectl create -f service-account.yaml >> $LOG 2>&1
 
 echo
