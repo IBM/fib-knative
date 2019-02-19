@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const port = 8080
 var fibUtils = require("./fibUtils");
-var bodyParser = require('body-parser')
 
 // CORS
 app.use(function(req, res, next) {
@@ -11,15 +10,10 @@ app.use(function(req, res, next) {
   next();
 });
 
-// parse application/json
-app.use(bodyParser.json())
-
-app.post("/fib", function (request, response) {
-  const num = request.body.number;
-  const result = fibUtils.fibonacci(num)
-  response.send(result)
+app.get("/:number", function (req, res) {
+  res.send( fibUtils.fibonacci( req.params.number ) )
 });
 
-app.get('/', (req, res) => res.send('Hello World! Post to /fib with {"number":10} for a fibonacci sequence'))
+app.get('/', (req, res) => res.send('Hello World! GET with "/<number>" for a fibonacci sequence'))
 
 app.listen(port, () => console.log(`Fibonacci app listening on port ${port}!`))
