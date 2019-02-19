@@ -1,9 +1,12 @@
 let fibonacci = function(n) {
   let sequence = [1, 1];
-  if (n === 1) {
+  if (n < 1) {
+    return [];
+  }
+  else if (n == 1) {
     return [sequence[0]];
   }
-  else if (n === 2) {
+  else if (n == 2) {
     return sequence;
   }
   else {
