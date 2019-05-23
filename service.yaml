@@ -14,7 +14,7 @@ spec:
           source:
             git:
               url: https://github.com/IBM/fib-knative.git
-              revision: master
+              revision: vnext
           template:
             name: kaniko
             arguments:

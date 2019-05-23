@@ -5,9 +5,10 @@ metadata:
   namespace: default
 spec:
   release:
-    revisions: ["@latest"]
+    revisions: ["fib-knative-xxxxx", "@latest"]
+    rolloutPercent: 10
     configuration:
       revisionTemplate:
         spec:
           container:
-            image: docker.io/ibmcom/fib-knative
+            image: docker.io/ibmcom/fib-knative:vnext
