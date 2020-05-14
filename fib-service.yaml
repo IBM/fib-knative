@@ -1,13 +1,12 @@
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: fib-knative
   namespace: default
 spec:
-  release:
-    revisions: ["@latest"]
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            image: docker.io/ibmcom/fib-knative
+  template:
+    metadata:
+      name: fib-knative-one
+    spec:
+      containers:
+        - image: docker.io/ibmcom/fib-knative
