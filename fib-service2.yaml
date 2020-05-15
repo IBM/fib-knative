@@ -1,14 +1,17 @@
-apiVersion: serving.knative.dev/v1alpha1
+apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: fib-knative
   namespace: default
 spec:
-  release:
-    revisions: ["fib-knative-xxxxx", "@latest"]
-    rolloutPercent: 10
-    configuration:
-      revisionTemplate:
-        spec:
-          container:
-            image: docker.io/ibmcom/fib-knative:vnext
+  template:
+    metadata:
+      name: fib-knative-zero
+    spec:
+      containers:
+        - image: docker.io/ibmcom/fib-knative:vnext
+  traffic:
+  - revisionName: fib-knative-one
+    percent: 90
+  - revisionName: fib-knative-zero
+    percent: 10
